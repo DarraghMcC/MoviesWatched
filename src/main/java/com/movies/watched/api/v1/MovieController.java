@@ -1,4 +1,4 @@
-package com.movies.watched.api.v1.model;
+package com.movies.watched.api.v1;
 
 import com.movies.watched.service.MovieService;
 import org.springframework.web.bind.annotation.PathVariable;
