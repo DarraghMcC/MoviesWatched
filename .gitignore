@@ -1,0 +1,16 @@
+/.gradle/
+/*.gradle
+/.project
+/.classpath
+/.checkstyle
+/.idea
+/*.iml
+/*.ipr
+/*.iws
+/sih
+/.settings/
+/build/
+/bin/
+/out/
+/config/local.properties
+/-*/
