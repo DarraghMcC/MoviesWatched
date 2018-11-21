@@ -1,0 +1,24 @@
+version: "3.5"
+
+services:
+  movie-db:
+    container_name: movie-db
+    image: postgres:10
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "movieDb"
+      POSTGRES_USER: "pglocal"
+      POSTGRES_PASSWORD: "pglocal"
+    volumes:
+      - type: volume
+        source: movie_pg_volume
+        target: /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "pglocal", "-P", "pglocal"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  movie_pg_volume:
