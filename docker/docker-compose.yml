@@ -1,6 +1,19 @@
 version: "3.5"
 
 services:
+  movies-watched-api:
+    image: movies-watched-api
+    container_name: movies-watched-api
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - movie-db
+    environment:
+      JAVA_OPTS: -Xmx124m -Xms124m -server -XX:+UseG1GC
+    networks:
+      - movie-network
+
   movie-db:
     container_name: movie-db
     image: postgres:10
@@ -19,6 +32,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - movie-network
 
 volumes:
   movie_pg_volume:
+
+networks:
+  movie-network:
+    driver: bridge
