@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -17,6 +18,12 @@ public class Movie {
   private String title;
 
   @NotNull
-  @Column(name="number_of_times_seen")
   private Integer numberOfTimesSeen;
+
+  @NotNull
+  private LocalDateTime createdDateTime;
+
+  @NotNull
+  private LocalDateTime updatedDateTime;
+
 }

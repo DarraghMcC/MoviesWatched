@@ -23,3 +23,9 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+              - column:
+                  name: updated_date_time
+                  type: timestamp
+              - column:
+                  name: created_date_time
+                  type: timestamp
