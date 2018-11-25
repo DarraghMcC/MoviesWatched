@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: DarraghMc
+      changes:
+        - addColumn:
+            tableName: movie
+            columns:
+              - column:
+                  name: review
+                  type: varchar(255)

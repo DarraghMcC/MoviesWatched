@@ -26,4 +26,6 @@ public class Movie {
   @NotNull
   private LocalDateTime updatedDateTime;
 
+  private String review;
+
 }

@@ -58,10 +58,26 @@ public class MovieServiceImpleTest {
     verify(movieRepository).findByTitle(testMovie.getTitle().toUpperCase());
     assertThat(movieCaptor.getValue().getTitle()).isEqualTo(testMovie.getTitle().toUpperCase());
     assertThat(movieCaptor.getValue().getNumberOfTimesSeen()).isEqualTo(1);
+    assertThat(movieCaptor.getValue().getReview()).isEqualTo(testMovie.getReview());
     assertFalse("Date should be before now",
       movieCaptor.getValue().getCreatedDateTime().isAfter(LocalDateTime.now()));
     assertFalse("Date should be before now",
       movieCaptor.getValue().getUpdatedDateTime().isAfter(LocalDateTime.now()));
+  }
+
+  @Test
+  public void testAddSeenMovie_noReview() {
+    final MovieDTO testMovie = createTestMovie();
+    testMovie.setReview(null);
+    when(movieRepository.findByTitle(anyString())).thenReturn(null);
+    when(movieRepository.save(any())).thenReturn(new Movie());
+
+    ArgumentCaptor<Movie> movieCaptor = ArgumentCaptor.forClass(Movie.class);
+    sut.addMovieSeen(testMovie);
+
+    verify(movieRepository).save(movieCaptor.capture());
+    verify(movieRepository).findByTitle(testMovie.getTitle().toUpperCase());
+    assertThat(movieCaptor.getValue().getReview()).isNull();
   }
 
   @Test
@@ -157,6 +173,58 @@ public class MovieServiceImpleTest {
     assertThat(movieCaptor.getValue().getNumberOfTimesSeen()).isEqualTo(movieDTO.getNumberOfTimesSeen());
     assertThat(movieCaptor.getValue().getCreatedDateTime()).isEqualTo(createdDate);
     assertThat(movieCaptor.getValue().getUpdatedDateTime()).isNotEqualTo(createdDate);
+    assertThat(movieCaptor.getValue().getReview()).isEqualTo(movieDTO.getReview());
+  }
+
+  @Test
+  public void testUpdateMovie_updateReview() {
+    final Movie movie = new Movie();
+    final LocalDateTime createdDate = LocalDateTime.now().minusDays(2);
+
+    movie.setNumberOfTimesSeen(5);
+    movie.setCreatedDateTime(createdDate);
+    movie.setUpdatedDateTime(createdDate);
+    movie.setTitle("testTitle");
+    movie.setReview("original review");
+
+    final MovieDTO movieDTO = createTestMovie();
+    movieDTO.setNumberOfTimesSeen(movie.getNumberOfTimesSeen() + 1);
+
+    when(movieRepository.findByTitle(anyString())).thenReturn(movie);
+    when(movieRepository.save(any())).thenReturn(new Movie());
+    sut.updateMovieSeen(movieDTO);
+
+    ArgumentCaptor<Movie> movieCaptor = ArgumentCaptor.forClass(Movie.class);
+    verify(movieRepository).save(movieCaptor.capture());
+    verify(movieRepository).findByTitle(movie.getTitle());
+
+    assertThat(movieCaptor.getValue().getReview()).isEqualTo(movieDTO.getReview());
+  }
+
+  @Test
+  public void testUpdateMovie_noUpdateReview() {
+    final Movie movie = new Movie();
+    final LocalDateTime createdDate = LocalDateTime.now().minusDays(2);
+
+    movie.setNumberOfTimesSeen(5);
+    movie.setCreatedDateTime(createdDate);
+    movie.setUpdatedDateTime(createdDate);
+    movie.setTitle("testTitle");
+    movie.setReview("original review");
+
+    final MovieDTO movieDTO = createTestMovie();
+    movieDTO.setReview(null);
+    movieDTO.setNumberOfTimesSeen(movie.getNumberOfTimesSeen() + 1);
+
+    when(movieRepository.findByTitle(anyString())).thenReturn(movie);
+    when(movieRepository.save(any())).thenReturn(new Movie());
+    sut.updateMovieSeen(movieDTO);
+
+    ArgumentCaptor<Movie> movieCaptor = ArgumentCaptor.forClass(Movie.class);
+    verify(movieRepository).save(movieCaptor.capture());
+    verify(movieRepository).findByTitle(movie.getTitle());
+
+    assertThat(movieCaptor.getValue().getReview()).isEqualTo("original review");
   }
 
   @Test
@@ -232,6 +300,7 @@ public class MovieServiceImpleTest {
     MovieDTO movieDTO = new MovieDTO();
     movieDTO.setNumberOfTimesSeen(0);
     movieDTO.setTitle("TestMovie");
+    movieDTO.setReview("This is a review.");
     return movieDTO;
   }
 

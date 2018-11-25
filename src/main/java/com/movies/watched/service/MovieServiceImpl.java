@@ -37,6 +37,7 @@ public class MovieServiceImpl implements MovieService {
     movie.setTitle(capitalisedTitle);
     movie.setCreatedDateTime(LocalDateTime.now());
     movie.setUpdatedDateTime(LocalDateTime.now());
+    movie.setReview(movieDTO.getReview());
 
     Integer numberOfTimesSeen = movieDTO.getNumberOfTimesSeen();
     if (Objects.isNull(numberOfTimesSeen) || numberOfTimesSeen == 0) {
@@ -75,9 +76,9 @@ public class MovieServiceImpl implements MovieService {
     if (Objects.nonNull(numberOfTimesSeen) && numberOfTimesSeen < movie.getNumberOfTimesSeen()) {
       throw new MovieValidationException(ErrorMessage.COUNT_REDUCTION);
     }
-    //user is not required to pass this value
-    movie.setNumberOfTimesSeen(Objects.isNull(numberOfTimesSeen) ?
-      movie.getNumberOfTimesSeen() : numberOfTimesSeen);
+    //user is not required to pass these values
+    movie.setNumberOfTimesSeen(Objects.isNull(numberOfTimesSeen) ? movie.getNumberOfTimesSeen() : numberOfTimesSeen);
+    movie.setReview(Objects.isNull(movieDTO.getReview()) ? movie.getReview() : movieDTO.getReview());
     return modelMapper.map(movieRepository.save(movie), MovieDTO.class);
   }
 
